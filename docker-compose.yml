@@ -20,11 +20,7 @@ services:
     environment:
       HOST: 0.0.0.0
       HOME: /home/node
-
-      # DO NOT hardcode token here
-      # It will be injected by Coolify environment variables
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
-
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
       CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
@@ -33,6 +29,22 @@ services:
       - openclaw-config:/home/node/.openclaw
       - openclaw-workspace:/home/node/.openclaw/workspace
 
+    networks:
+      - default
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
+      - traefik.http.routers.openclaw.entrypoints=http,https
+      - traefik.http.routers.openclaw.tls=true
+      - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
+      - traefik.http.services.openclaw.loadbalancer.server.port=18789
+
 volumes:
   openclaw-config:
   openclaw-workspace:
+
+networks:
+  default:
+    external: true
+    name: ${COOLIFY_RESOURCE_UUID}
