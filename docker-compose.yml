@@ -23,16 +23,14 @@ services:
     init: true
     restart: unless-stopped
     command:
-      [
-    "node",
-    "dist/index.js",
-    "gateway",
-    "--allow-unconfigured",
-    "--bind",
-    "${OPENCLAW_GATEWAY_BIND:-public}",
-    "--port",
-    "18789"
-  ]
+  - node
+  - dist/index.js
+  - gateway
+  - --allow-unconfigured
+  - --bind
+  - ${OPENCLAW_GATEWAY_BIND:-public}
+  - --port
+  - "18789"
 
   openclaw-cli:
     build:
