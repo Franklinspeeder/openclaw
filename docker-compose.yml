@@ -27,8 +27,9 @@ services:
         "node",
         "dist/index.js",
         "gateway",
+        --allow-unconfigured
         "--bind",
-        "${OPENCLAW_GATEWAY_BIND:-lan}",
+        "${OPENCLAW_GATEWAY_BIND:-public}",
         "--port",
         "18789"
       ]
