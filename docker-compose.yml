@@ -27,7 +27,7 @@ services:
       - gateway
       - --allow-unconfigured
       - --bind
-      - auto
+      - lan
       - --port
       - "18789"
 
