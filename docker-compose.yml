@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     image: openclaw:local
     init: true
     restart: unless-stopped
@@ -11,7 +12,6 @@ services:
       - node
       - dist/index.js
       - gateway
-      - --allow-unconfigured
       - --bind
       - lan
       - --port
@@ -20,6 +20,8 @@ services:
     environment:
       HOST: 0.0.0.0
       HOME: /home/node
+
+      # injected by Coolify
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
@@ -29,9 +31,6 @@ services:
       - openclaw-config:/home/node/.openclaw
       - openclaw-workspace:/home/node/.openclaw/workspace
 
-    networks:
-      - default
-
     labels:
       - traefik.enable=true
       - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
@@ -39,6 +38,9 @@ services:
       - traefik.http.routers.openclaw.tls=true
       - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
       - traefik.http.services.openclaw.loadbalancer.server.port=18789
+
+    networks:
+      - default
 
 volumes:
   openclaw-config:
