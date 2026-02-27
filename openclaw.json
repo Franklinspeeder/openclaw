@@ -1,0 +1,9 @@
+{
+  "gateway": {
+    "mode": "local",
+    "controlUi": {
+      "allowedOrigins": ["https://agents.digitalixhub.com"],
+      "dangerouslyAllowHostHeaderOriginFallback": false
+    }
+  }
+}
