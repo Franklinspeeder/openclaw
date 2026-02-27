@@ -2,11 +2,11 @@ version: "3.9"
 
 services:
   openclaw-gateway:
+    user: "0:0"
     build:
       context: .
       dockerfile: Dockerfile
     image: openclaw:local
-    container_name: openclaw-gateway
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -33,11 +33,11 @@ services:
       - "18789"
 
   openclaw-cli:
+    user: "0:0"
     build:
       context: .
       dockerfile: Dockerfile
     image: openclaw:local
-    container_name: openclaw-cli
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -55,7 +55,7 @@ services:
     entrypoint:
       - node
       - dist/index.js
-      
+
 volumes:
   openclaw_config:
   openclaw_workspace:
