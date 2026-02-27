@@ -22,21 +22,17 @@ services:
       - "18790:18790"
     init: true
     restart: unless-stopped
-    entrypoint: ["bash", "-lc"]
-    command: >
-      mkdir -p /home/node/.openclaw &&
-      cat > /home/node/.openclaw/openclaw.json <<'JSON'
-      {
-        "gateway": {
-          "controlUi": {
-            "allowedOrigins": [
-              "https://agents.digitalixhub.com"
-            ]
-          }
-        }
-      }
-      JSON
-      && node dist/index.js gateway --allow-unconfigured --bind lan --port 18789
+    command:
+      - node
+      - dist/index.js
+      - gateway
+      - --allow-unconfigured
+      - --bind
+      - lan
+      - --port
+      - "18789"
+      - --gateway.controlUi.allowedOrigins
+      - https://agents.digitalixhub.com
 
 volumes:
   openclaw_config:
