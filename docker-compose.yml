@@ -28,7 +28,7 @@ services:
       - gateway
       - --allow-unconfigured
       - --bind
-      - ${OPENCLAW_GATEWAY_BIND:-public}
+      - auto
       - --port
       - "18789"
 
