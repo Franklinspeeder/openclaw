@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
     image: openclaw:local
     init: true
     restart: unless-stopped
@@ -21,32 +20,35 @@ services:
       HOST: 0.0.0.0
       HOME: /home/node
 
-      # injected by Coolify
+      # must be provided by Coolify (Runtime env)
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
 
-    volumes:
-      - openclaw-config:/home/node/.openclaw
-      - openclaw-workspace:/home/node/.openclaw/workspace
+      # optional (leave blank if unused)
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
 
     labels:
       - traefik.enable=true
+
+      # if Coolify injects a network, keep your current hardcoded value here
+      - traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04
+
       - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
       - traefik.http.routers.openclaw.entrypoints=http,https
       - traefik.http.routers.openclaw.tls=true
       - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
+      - traefik.http.routers.openclaw.priority=1000
       - traefik.http.services.openclaw.loadbalancer.server.port=18789
 
-    networks:
-      - default
+    volumes:
+      # persistent state
+      - openclaw-config:/home/node/.openclaw
+      - openclaw-workspace:/home/node/.openclaw/workspace
+
+      # force correct config on every deploy (read-only)
+      - ./openclaw.json:/home/node/.openclaw/openclaw.json:ro
 
 volumes:
   openclaw-config:
   openclaw-workspace:
-
-networks:
-  default:
-    external: true
-    name: ${COOLIFY_RESOURCE_UUID}
