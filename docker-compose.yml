@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   openclaw-gateway:
-    user: "0:0"
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,9 +21,22 @@ services:
       - "18790:18790"
     init: true
     restart: unless-stopped
-    entrypoint: ["bash","-lc"]
     command:
-      - 'mkdir -p /home/node/.openclaw && printf "%s" "{\"gateway\":{\"controlUi\":{\"allowedOrigins\":[\"https://agents.digitalixhub.com\"],\"dangerouslyAllowHostHeaderOriginFallback\":false}}}" > /home/node/.openclaw/openclaw.json && node dist/index.js gateway --allow-unconfigured --bind lan --port 18789'
+      - node
+      - dist/index.js
+      - gateway
+      - --allow-unconfigured
+      - --bind
+      - lan
+      - --port
+      - "18789"
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)"
+      - "traefik.http.routers.openclaw.entrypoints=http,https"
+      - "traefik.http.routers.openclaw.tls=true"
+      - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
 
 volumes:
   openclaw_config:
