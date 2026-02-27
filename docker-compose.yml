@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
     image: openclaw:local
-    container_name: openclaw-gateway-k8kgk0wg0o08o8kwkg04wk04
     init: true
     restart: unless-stopped
 
@@ -22,52 +21,18 @@ services:
       HOST: 0.0.0.0
       HOME: /home/node
 
-      # your existing token (keep your current one)
-      OPENCLAW_GATEWAY_TOKEN: "PUT_YOUR_EXISTING_TOKEN_HERE"
+      # DO NOT hardcode token here
+      # It will be injected by Coolify environment variables
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
 
-      # Optional (leave blank if unused)
-      CLAUDE_WEB_COOKIE: ""
-      CLAUDE_WEB_SESSION_KEY: ""
-      CLAUDE_AI_SESSION_KEY: ""
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
 
     volumes:
-      - k8kgk0wg0o08o8kwkg04wk04_openclaw-config:/home/node/.openclaw
-      - k8kgk0wg0o08o8kwkg04wk04_openclaw-workspace:/home/node/.openclaw/workspace
-
-    # ✅ IMPORTANT: do NOT publish ports publicly.
-    # Traefik will route internally via the Docker network.
-    # ports: []   # (just omit ports entirely)
-
-    networks:
-      - k8kgk0wg0o08o8kwkg04wk04
-
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04
-
-      # Router
-      - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
-      - traefik.http.routers.openclaw.entrypoints=http,https
-      - traefik.http.routers.openclaw.tls=true
-      - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
-
-      # Service -> container port
-      - traefik.http.services.openclaw.loadbalancer.server.port=18789
-
-      # ✅ HTTP -> HTTPS redirect
-      - traefik.http.routers.openclaw-http.rule=Host(`agents.digitalixhub.com`)
-      - traefik.http.routers.openclaw-http.entrypoints=http
-      - traefik.http.routers.openclaw-http.middlewares=openclaw-https-redirect
-
-      - traefik.http.middlewares.openclaw-https-redirect.redirectscheme.scheme=https
-      - traefik.http.middlewares.openclaw-https-redirect.redirectscheme.permanent=true
+      - openclaw-config:/home/node/.openclaw
+      - openclaw-workspace:/home/node/.openclaw/workspace
 
 volumes:
-  k8kgk0wg0o08o8kwkg04wk04_openclaw-config:
-    external: true
-  k8kgk0wg0o08o8kwkg04wk04_openclaw-workspace:
-    external: true
-
-networks:
-  k8kgk0wg0o08o8kwkg04wk04:
-    external: true
+  openclaw-config:
+  openclaw-workspace:
