@@ -30,10 +30,7 @@ services:
 
     labels:
       - traefik.enable=true
-
-      # if Coolify injects a network, keep your current hardcoded value here
       - traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04
-
       - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
       - traefik.http.routers.openclaw.entrypoints=http,https
       - traefik.http.routers.openclaw.tls=true
@@ -42,12 +39,8 @@ services:
       - traefik.http.services.openclaw.loadbalancer.server.port=18789
 
     volumes:
-      # persistent state
       - openclaw-config:/home/node/.openclaw
       - openclaw-workspace:/home/node/.openclaw/workspace
-
-      # force correct config on every deploy (read-only)
-      - ./openclaw.json:/home/node/.openclaw/openclaw.json:ro
 
 volumes:
   openclaw-config:
