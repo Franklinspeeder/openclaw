@@ -1,10 +1,16 @@
 {
   "gateway": {
     "mode": "local",
-    "trustedProxies": ["10.0.2.2"],
+
+    "auth": {
+      "tokenFromEnv": "OPENCLAW_GATEWAY_TOKEN"
+    },
+
     "controlUi": {
       "allowedOrigins": ["https://agents.digitalixhub.com"],
       "dangerouslyAllowHostHeaderOriginFallback": false
-    }
+    },
+
+    "trustedProxies": ["10.0.2.2", "127.0.0.1"]
   }
 }
