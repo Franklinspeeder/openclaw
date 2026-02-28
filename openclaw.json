@@ -1,6 +1,7 @@
 {
   "gateway": {
     "mode": "local",
+    "trustedProxies": ["10.0.2.2"],
     "controlUi": {
       "allowedOrigins": ["https://agents.digitalixhub.com"],
       "dangerouslyAllowHostHeaderOriginFallback": false
