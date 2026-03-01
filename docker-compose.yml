@@ -17,34 +17,27 @@ services:
       - "18789"
 
     environment:
-      HOST: 0.0.0.0
+      HOST: "0.0.0.0"
       HOME: /home/node
-
-      # must be provided by Coolify (Runtime env)
-      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
-
-      # optional (leave blank if unused)
-      #CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      #CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      #CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
+      OPENCLAW_GATEWAY_TOKEN: "${OPENCLAW_GATEWAY_TOKEN}"
 
     labels:
-  - traefik.enable=true
-  - traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04
-  - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
-  - traefik.http.routers.openclaw.entrypoints=http,https
-  - traefik.http.routers.openclaw.tls=true
-  - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
-  - traefik.http.services.openclaw.loadbalancer.server.port=18789
+      - "traefik.enable=true"
+      - "traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04"
+      - "traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)"
+      - "traefik.http.routers.openclaw.entrypoints=http,https"
+      - "traefik.http.routers.openclaw.tls=true"
+      - "traefik.http.routers.openclaw.tls.certresolver=letsencrypt"
+      - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
 
-  # 🔐 Basic Auth (pulled from Coolify env var)
-  - traefik.http.middlewares.openclaw-auth.basicauth.users=${OPENCLAW_BASIC_AUTH_USERS}
-  - traefik.http.routers.openclaw.middlewares=openclaw-auth
+      # 🔐 Basic Auth (value stored in Coolify env var)
+      - "traefik.http.middlewares.openclaw-auth.basicauth.users=${OPENCLAW_BASIC_AUTH_USERS}"
+      - "traefik.http.routers.openclaw.middlewares=openclaw-auth"
 
     volumes:
       - openclaw-config:/home/node/.openclaw
       - openclaw-workspace:/home/node/.openclaw/workspace
 
 volumes:
-  openclaw-config:
-  openclaw-workspace:
+  openclaw-config: {}
+  openclaw-workspace: {}
