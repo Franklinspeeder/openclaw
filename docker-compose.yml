@@ -31,8 +31,8 @@ services:
       - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
 
       # 🔐 Basic Auth (value stored in Coolify env var)
-      - "traefik.http.middlewares.openclaw-auth.basicauth.users=${OPENCLAW_BASIC_AUTH_USERS}"
-      - "traefik.http.routers.openclaw.middlewares=openclaw-auth"
+      #- "traefik.http.middlewares.openclaw-auth.basicauth.users=${OPENCLAW_BASIC_AUTH_USERS}"
+      #- "traefik.http.routers.openclaw.middlewares=openclaw-auth"
 
     volumes:
       - openclaw-config:/home/node/.openclaw
