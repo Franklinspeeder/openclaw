@@ -3,41 +3,58 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: openclaw:local
+    image: 'openclaw:local'
     init: true
     restart: unless-stopped
-
     command:
       - node
       - dist/index.js
       - gateway
-      - --bind
+      - '--bind'
       - lan
-      - --port
-      - "18789"
-
+      - '--port'
+      - '18789'
     environment:
-      HOST: "0.0.0.0"
+      HOST: 0.0.0.0
       HOME: /home/node
-      OPENCLAW_GATEWAY_TOKEN: "${OPENCLAW_GATEWAY_TOKEN}"
-
+      OPENCLAW_GATEWAY_TOKEN: '${OPENCLAW_GATEWAY_TOKEN}'
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04"
-      - "traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)"
-      - "traefik.http.routers.openclaw.entrypoints=http,https"
-      - "traefik.http.routers.openclaw.tls=true"
-      - "traefik.http.routers.openclaw.tls.certresolver=letsencrypt"
-      - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
-      - "traefik.http.routers.openclaw.middlewares=openclaw-auth@file,openclaw-ratelimit@file"
-
-      # 🔐 Basic Auth (value stored in Coolify env var)
-      #- "traefik.http.middlewares.openclaw-auth.basicauth.users=${OPENCLAW_BASIC_AUTH_USERS}"
-      #- "traefik.http.routers.openclaw.middlewares=openclaw-auth"
-
+      - traefik.enable=true
+      - traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04
+      - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
+      - 'traefik.http.routers.openclaw.entrypoints=http,https'
+      - traefik.http.routers.openclaw.tls=true
+      - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
+      - traefik.http.services.openclaw.loadbalancer.server.port=18789
+      - 'traefik.http.routers.openclaw.middlewares=openclaw-auth@file,openclaw-ratelimit@file'
     volumes:
-      - openclaw-config:/home/node/.openclaw
-      - openclaw-workspace:/home/node/.openclaw/workspace
+      - 'openclaw-config:/home/node/.openclaw'
+      - 'openclaw-workspace:/home/node/.openclaw/workspace'
+
+  openclaw-browser-relay:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 'openclaw:local'
+    init: true
+    restart: unless-stopped
+    command:
+      - node
+      - dist/index.js
+      - browser-relay
+      - '--bind'
+      - lan
+      - '--port'
+      - '18792'
+    environment:
+      HOST: 0.0.0.0
+      HOME: /home/node
+      OPENCLAW_GATEWAY_TOKEN: '${OPENCLAW_GATEWAY_TOKEN}'
+    ports:
+      - '127.0.0.1:18792:18792'
+    volumes:
+      - 'openclaw-config:/home/node/.openclaw'
+      - 'openclaw-workspace:/home/node/.openclaw/workspace'
 
 volumes:
   openclaw-config: {}
