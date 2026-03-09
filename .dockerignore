@@ -40,7 +40,7 @@ apps/ios/build
 
 # large app trees not needed for CLI build
 apps/
-assets/
+#assets/
 Peekaboo/
 Swabble/
 Core/
