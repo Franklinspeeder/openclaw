@@ -31,31 +31,6 @@ services:
       - 'openclaw-config:/home/node/.openclaw'
       - 'openclaw-workspace:/home/node/.openclaw/workspace'
 
-  openclaw-browser-relay:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: 'openclaw:local'
-    init: true
-    restart: unless-stopped
-    command:
-      - node
-      - dist/index.js
-      - browser-relay
-      - '--bind'
-      - lan
-      - '--port'
-      - '18792'
-    environment:
-      HOST: 0.0.0.0
-      HOME: /home/node
-      OPENCLAW_GATEWAY_TOKEN: '${OPENCLAW_GATEWAY_TOKEN}'
-    ports:
-      - '127.0.0.1:18792:18792'
-    volumes:
-      - 'openclaw-config:/home/node/.openclaw'
-      - 'openclaw-workspace:/home/node/.openclaw/workspace'
-
 volumes:
   openclaw-config: {}
   openclaw-workspace: {}
