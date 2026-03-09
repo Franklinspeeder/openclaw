@@ -12,17 +12,10 @@ services:
     volumes:
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
-      ## Uncomment the lines below to enable sandbox isolation
-      ## (agents.defaults.sandbox). Requires Docker CLI in the image
-      ## (build with --build-arg OPENCLAW_INSTALL_DOCKER_CLI=1) or use
-      ## docker-setup.sh with OPENCLAW_SANDBOX=1 for automated setup.
-      ## Set DOCKER_GID to the host's docker group GID (run: stat -c '%g' /var/run/docker.sock).
-      # - /var/run/docker.sock:/var/run/docker.sock
-    # group_add:
-    #   - "${DOCKER_GID:-999}"
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+      - "127.0.0.1:18791:18791"
     init: true
     restart: unless-stopped
     command:
@@ -47,6 +40,15 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=k8kgk0wg0o08o8kwkg04wk04
+      - traefik.http.routers.openclaw.rule=Host(`agents.digitalixhub.com`)
+      - "traefik.http.routers.openclaw.entrypoints=http,https"
+      - traefik.http.routers.openclaw.tls=true
+      - traefik.http.routers.openclaw.tls.certresolver=letsencrypt
+      - traefik.http.services.openclaw.loadbalancer.server.port=18789
+      - "traefik.http.routers.openclaw.middlewares=openclaw-auth@file,openclaw-ratelimit@file"
 
   openclaw-cli:
     image: ${OPENCLAW_IMAGE:-openclaw:local}
