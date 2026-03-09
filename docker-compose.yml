@@ -16,6 +16,8 @@ services:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
       - "127.0.0.1:18791:18791"
+      - "127.0.0.1:18792:18792"
+      
     init: true
     restart: unless-stopped
     command:
